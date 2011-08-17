@@ -6,11 +6,12 @@ import java.io.InputStreamReader;
 import java.util.Random;
 
 public class Battle {
-	private String player = "‚ ‚«";
+	private String player = "ã‚ã";
 	private int myHP = 10;
 	private int myMP = 6;
-	private String monster = "ƒXƒ‰ƒCƒ€";
-	private int monsterHP = 8;
+	Monster m = new Monster();
+	String monster = m.getName();
+	int m_hp = m.getHP();
 
 	/**
 	 * @param args
@@ -23,16 +24,20 @@ public class Battle {
 
 	public void doit() throws IOException {
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+
 		System.out.println("----------------");
-		System.out.println(monster + "‚ª‚ ‚ç‚í‚ê‚½!");
+		System.out.println(monster + "ãŒã‚ã‚‰ã‚ã‚ŒãŸï¼");
 		System.out.println("----------------");
+
 		for (;;) {
-			if (myHP < 1 || monsterHP < 1) {
+			if (myHP < 1 || m_hp < 1) {
 				break;
 			}
-			myturn(in);
+			if (myturn(in) == 3) {
+				break;
+			}
 			String s1 = in.readLine();
-			if (s1.length() <= 0 && monsterHP > 1) {
+			if (s1.length() <= 0 && m_hp > 1) {
 				MonsterTurn();
 			}
 			String s2 = in.readLine();
@@ -40,73 +45,84 @@ public class Battle {
 				continue;
 			}
 		}
-		if (monsterHP < 1) {
+		if (m_hp < 1) {
 			System.out.println("----------------");
-			System.out.println(monster + "‚ğ‚½‚¨‚µ‚½I");
+			System.out.println(monster + "ã‚’ãŸãŠã—ãŸï¼");
 			System.out.println("----------------");
 		} else if (myHP < 1) {
 			System.out.println("----------------");
-			System.out.println("ƒQ[ƒ€ƒI[ƒo[");
+			System.out.println("ã‚²ãƒ¼ãƒ ã‚ªãƒ¼ãƒãƒ¼");
+			System.out.println("----------------");
+		} else {
+			System.out.println("----------------");
+			System.out.println(player + "ã¯é€ƒã’å‡ºã—ãŸ");
 			System.out.println("----------------");
 		}
 	}
 
-	public void myturn(BufferedReader in) throws IOException {
+	public int myturn(BufferedReader in) throws IOException {
 		System.out.println("HP = " + myHP + "  " + "MP = " + myMP);
-		System.out.println("ƒRƒ}ƒ“ƒh");
-		System.out.println("1.‚½‚½‚©‚¤");
-		System.out.println("2.ƒzƒCƒ~");
-		// System.out.println("3.‚É‚°‚é");
+		System.out.println("ã‚³ãƒãƒ³ãƒ‰");
+		System.out.println("1.ãŸãŸã‹ã†");
+		System.out.println("2.ãƒ›ã‚¤ãƒŸ");
+		System.out.println("3.ã«ã’ã‚‹");
 		String command = in.readLine();
 		if (command.equals("1")) {
 			attack();
+			return 1;
 		} else if (command.equals("2")) {
 			recovery();
-			// } else if (command.equals("3")) {
-			// escape();
+			return 2;
+		} else if (command.equals("3")) {
+			return 3;
+		} else {
+			return -1;
 		}
 	}
 
 	public void attack() {
-		Random point = new Random();
-		int power = point.nextInt(3) + 1;
-		System.out.println(monster + "‚É" + power + "‚Ì‚±‚¤‚°‚«");
-		monsterHP -= power;
+		Random r = new Random();
+		int bump = r.nextInt(10) + 1;
+		if (bump == 1) {
+			System.out.println("ã‹ã„ã—ã‚“ã®ã„ã¡ã’ãï¼");
+			System.out.println(monster + "ã«100ã®ã“ã†ã’ã");
+			m_hp -= 100;
+		} else {
+			Random point = new Random();
+			int power = point.nextInt(3) + 1;
+			System.out.println(monster + "ã«" + power + "ã®ã“ã†ã’ã");
+			m_hp -= power;
+		}
 	}
 
 	public void recovery() {
-		System.out.println("ƒzƒCƒ~‚ğ‚Æ‚È‚¦‚½I");
+		System.out.println("ãƒ›ã‚¤ãƒŸã‚’ã¨ãªãˆãŸï¼");
 		if (myMP < 2) {
-			System.out.println("‚µ‚©‚µAMP‚ª‘«‚è‚È‚¢");
+			System.out.println("ã—ã‹ã—ã€MPãŒè¶³ã‚Šãªã„");
 		} else if (myHP == 10) {
-			System.out.println("‚µ‚©‚µA¡‚Ì" + player + "‚É‚Í•K—v‚È‚³‚»‚¤‚¾");
+			System.out.println("ã—ã‹ã—ã€ä»Šã®" + player + "ã«ã¯å¿…è¦ãªã•ãã†ã ");
+
 		} else if (myHP == 9) {
 			myHP += 1;
 			myMP -= 2;
-			System.out.println("HP‚ª1‚©‚¢‚Ó‚­");
+			System.out.println("HPãŒ1ã‹ã„ãµã");
 			System.out.println("HP = " + myHP + "  " + "MP = " + myMP);
 		} else if (myHP <= 8) {
 			myHP += 2;
 			myMP -= 2;
-			System.out.println("HP‚ª2‚©‚¢‚Ó‚­");
+			System.out.println("HPãŒ2ã‹ã„ãµã");
 			System.out.println("HP = " + myHP + "  " + "MP = " + myMP);
 		}
 	}
 
 	public void MonsterTurn() {
 		System.out.println("----------------");
-		System.out.println(monster + "‚Ì‚±‚¤‚°‚«");
+		System.out.println(monster + "ã®ã“ã†ã’ã");
 		Random point = new Random();
 		int power = point.nextInt(3) + 1;
-		System.out.println(player + "‚É" + power + "‚Ìƒ_ƒ[ƒW");
+		System.out.println(player + "ã«" + power + "ã®ãƒ€ãƒ¡ãƒ¼ã‚¸");
 		myHP -= power;
 		System.out.println("----------------");
 	}
-
-	// public void escape() {
-	// System.out.println("----------------");
-	// System.out.println(player + "‚Í“¦‚°o‚µ‚½");
-	// System.out.println("----------------");
-	// }
 
 }
