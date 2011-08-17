@@ -10,8 +10,10 @@ public class Battle {
 	private int myHP = 10;
 	private int myMP = 6;
 	Monster m = new Monster();
-	String monster = m.getName();
-	int m_hp = m.getHP();
+	Monster mt = m.monster();
+	String monster = mt.getName();
+	int m_hp = mt.getHP();
+	int m_power = mt.getPower();
 
 	/**
 	 * @param args
@@ -102,15 +104,18 @@ public class Battle {
 		} else if (myHP == 10) {
 			System.out.println("しかし、今の" + player + "には必要なさそうだ");
 
-		} else if (myHP == 9) {
-			myHP += 1;
+		} else if (myHP <= 9) {
+			Random r = new Random();
+			int magic = r.nextInt(3) + 2;
+			int KeepMyHP = myHP;
+			if (myHP + magic > 10) {
+				myHP += (10 - KeepMyHP);
+				System.out.println("HPが" + (10 - KeepMyHP) + "かいふく");
+			} else {
+				myHP += magic;
+				System.out.println("HPが" + magic + "かいふく");
+			}
 			myMP -= 2;
-			System.out.println("HPが1かいふく");
-			System.out.println("HP = " + myHP + "  " + "MP = " + myMP);
-		} else if (myHP <= 8) {
-			myHP += 2;
-			myMP -= 2;
-			System.out.println("HPが2かいふく");
 			System.out.println("HP = " + myHP + "  " + "MP = " + myMP);
 		}
 	}
@@ -118,10 +123,8 @@ public class Battle {
 	public void MonsterTurn() {
 		System.out.println("----------------");
 		System.out.println(monster + "のこうげき");
-		Random point = new Random();
-		int power = point.nextInt(3) + 1;
-		System.out.println(player + "に" + power + "のダメージ");
-		myHP -= power;
+		System.out.println(player + "に" + m_power + "のダメージ");
+		myHP -= m_power;
 		System.out.println("----------------");
 	}
 
